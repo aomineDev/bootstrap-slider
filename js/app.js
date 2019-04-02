@@ -1,12 +1,28 @@
 const $sliderPrev = document.querySelector('.slider-prev'),
 $sliderNext = document.querySelector('.slider-next'),
 $sliderItem = document.querySelectorAll('.slider-item'),
-$controllerBar = document.querySelectorAll('.controller-bar');
+$controller = document.querySelector('.controller');
+// Slider Vars
 var sliderItemCount = $sliderItem.length - 1,
-countSliderNow = 0,
-countSlider = 0,
-index = 0,
+SliderNow = 0,
+SliderNP = 0,
+SliderIndex = 0,
+// Create Controller bar
+controllerIndex = 0,
+controllerBar,
 sliderAutoPlay = setInterval(showNextSlider, 5000);
+
+for(let i of $sliderItem) {
+	if (controllerIndex == 0) {
+		controllerBar = "<a href='javascript:void(0)' class='controller-bar controller-active' data-index='" + controllerIndex + "'><span class='controller-icon'></span></a>";
+	}else {
+		controllerBar = "<a href='javascript:void(0)' class='controller-bar' data-index='" + controllerIndex + "'><span class='controller-icon'></span></a>";
+	}
+	$controller.innerHTML += controllerBar;
+	controllerIndex++;
+}
+
+const $controllerBar = document.querySelectorAll('.controller-bar');
 
 $sliderNext.addEventListener('click', showNextSlider);
 $sliderPrev.addEventListener('click', showPrevSlider);
@@ -15,28 +31,28 @@ for (let i of $controllerBar) {
 }
 
 function showNextSlider(){
-	if (!$sliderItem[countSliderNow].classList.contains('slider-marker')) {
-		if (countSliderNow == sliderItemCount) {
-			countSlider = 0;
+	if (!$sliderItem[SliderNow].classList.contains('slider-marker')) {
+		if (SliderNow == sliderItemCount) {
+			SliderNP = 0;
 		}else {
-			countSlider = countSliderNow + 1;
+			SliderNP = SliderNow + 1;
 		}
-		$sliderItem[countSliderNow].classList.add('slider-marker');
-		$sliderItem[countSlider].classList.add('slider-item-next');
+		$sliderItem[SliderNow].classList.add('slider-marker');
+		$sliderItem[SliderNP].classList.add('slider-item-next');
 		setTimeout(()=>{
-			$sliderItem[countSliderNow].classList.add('slider-item-left');
-			$sliderItem[countSlider].classList.add('slider-item-left');
-			$controllerBar[countSliderNow].classList.remove('controller-active');
-			$controllerBar[countSlider].classList.add('controller-active');
+			$sliderItem[SliderNow].classList.add('slider-item-left');
+			$sliderItem[SliderNP].classList.add('slider-item-left');
+			$controllerBar[SliderNow].classList.remove('controller-active');
+			$controllerBar[SliderNP].classList.add('controller-active');
 		}, 100);
 		setTimeout(()=>{
-			$sliderItem[countSlider].classList.add('slider-active');
-			$sliderItem[countSlider].classList.remove('slider-item-next', 'slider-item-left');
-			$sliderItem[countSliderNow].classList.remove('slider-active', 'slider-item-left', 'slider-marker');
-			if(countSliderNow == sliderItemCount){
-				countSliderNow = 0;
+			$sliderItem[SliderNP].classList.add('slider-active');
+			$sliderItem[SliderNP].classList.remove('slider-item-next', 'slider-item-left');
+			$sliderItem[SliderNow].classList.remove('slider-active', 'slider-item-left', 'slider-marker');
+			if(SliderNow == sliderItemCount){
+				SliderNow = 0;
 			}else {
-				countSliderNow++;
+				SliderNow++;
 			}
 			clearInterval(sliderAutoPlay);
 			sliderAutoPlay = setInterval(showNextSlider, 5000);
@@ -45,28 +61,28 @@ function showNextSlider(){
 }
 
 function showPrevSlider(){
-	if (!$sliderItem[countSliderNow].classList.contains('slider-marker')) {
-		if (countSliderNow == 0) {
-			countSlider = sliderItemCount;
+	if (!$sliderItem[SliderNow].classList.contains('slider-marker')) {
+		if (SliderNow == 0) {
+			SliderNP = sliderItemCount;
 		}else {
-			countSlider = countSliderNow - 1;
+			SliderNP = SliderNow - 1;
 		}
-		$sliderItem[countSliderNow].classList.add('slider-marker');
-		$sliderItem[countSlider].classList.add('slider-item-prev');
+		$sliderItem[SliderNow].classList.add('slider-marker');
+		$sliderItem[SliderNP].classList.add('slider-item-prev');
 		setTimeout(()=>{
-			$sliderItem[countSliderNow].classList.add('slider-item-right');
-			$sliderItem[countSlider].classList.add('slider-item-right');
-			$controllerBar[countSliderNow].classList.remove('controller-active');
-			$controllerBar[countSlider].classList.add('controller-active');
+			$sliderItem[SliderNow].classList.add('slider-item-right');
+			$sliderItem[SliderNP].classList.add('slider-item-right');
+			$controllerBar[SliderNow].classList.remove('controller-active');
+			$controllerBar[SliderNP].classList.add('controller-active');
 		}, 100);
 		setTimeout(()=>{
-			$sliderItem[countSlider].classList.add('slider-active');
-			$sliderItem[countSlider].classList.remove('slider-item-prev', 'slider-item-right');
-			$sliderItem[countSliderNow].classList.remove('slider-active', 'slider-item-right', 'slider-marker');
-			if(countSliderNow == 0){
-				countSliderNow = sliderItemCount;
+			$sliderItem[SliderNP].classList.add('slider-active');
+			$sliderItem[SliderNP].classList.remove('slider-item-prev', 'slider-item-right');
+			$sliderItem[SliderNow].classList.remove('slider-active', 'slider-item-right', 'slider-marker');
+			if(SliderNow == 0){
+				SliderNow = sliderItemCount;
 			}else {
-				countSliderNow--;
+				SliderNow--;
 			}
 			clearInterval(sliderAutoPlay);
 			sliderAutoPlay = setInterval(showNextSlider, 5000);
@@ -75,39 +91,39 @@ function showPrevSlider(){
 }
 
 function controllerSlider() {
-	if (!$sliderItem[countSliderNow].classList.contains('slider-marker')) {
-		index = parseInt(this.dataset.index);
-		if (countSliderNow != index && countSliderNow  < index) {
-			$sliderItem[countSliderNow].classList.add('slider-marker');
-			$sliderItem[index].classList.add('slider-item-next');
+	if (!$sliderItem[SliderNow].classList.contains('slider-marker')) {
+		SliderIndex = parseInt(this.dataset.index);
+		if (SliderNow != SliderIndex && SliderNow  < SliderIndex) {
+			$sliderItem[SliderNow].classList.add('slider-marker');
+			$sliderItem[SliderIndex].classList.add('slider-item-next');
 			setTimeout(()=>{
-				$sliderItem[countSliderNow].classList.add('slider-item-left');
-				$sliderItem[index].classList.add('slider-item-left');
-				$controllerBar[countSliderNow].classList.remove('controller-active');
-				$controllerBar[index].classList.add('controller-active');
+				$sliderItem[SliderNow].classList.add('slider-item-left');
+				$sliderItem[SliderIndex].classList.add('slider-item-left');
+				$controllerBar[SliderNow].classList.remove('controller-active');
+				$controllerBar[SliderIndex].classList.add('controller-active');
 			}, 100);
 			setTimeout(()=>{
-				$sliderItem[index].classList.add('slider-active');
-				$sliderItem[index].classList.remove('slider-item-next', 'slider-item-left');
-				$sliderItem[countSliderNow].classList.remove('slider-active', 'slider-item-left', 'slider-marker');
-				countSliderNow = index;
+				$sliderItem[SliderIndex].classList.add('slider-active');
+				$sliderItem[SliderIndex].classList.remove('slider-item-next', 'slider-item-left');
+				$sliderItem[SliderNow].classList.remove('slider-active', 'slider-item-left', 'slider-marker');
+				SliderNow = SliderIndex;
 				clearInterval(sliderAutoPlay);
 				sliderAutoPlay = setInterval(showNextSlider, 5000);
 			}, 700);
-		}else if(countSliderNow != index && countSliderNow  > index) {
-			$sliderItem[countSliderNow].classList.add('slider-marker');
-			$sliderItem[index].classList.add('slider-item-prev');
+		}else if(SliderNow != SliderIndex && SliderNow  > SliderIndex) {
+			$sliderItem[SliderNow].classList.add('slider-marker');
+			$sliderItem[SliderIndex].classList.add('slider-item-prev');
 			setTimeout(()=>{
-				$sliderItem[countSliderNow].classList.add('slider-item-right');
-				$sliderItem[index].classList.add('slider-item-right');
-				$controllerBar[countSliderNow].classList.remove('controller-active');
-				$controllerBar[index].classList.add('controller-active');
+				$sliderItem[SliderNow].classList.add('slider-item-right');
+				$sliderItem[SliderIndex].classList.add('slider-item-right');
+				$controllerBar[SliderNow].classList.remove('controller-active');
+				$controllerBar[SliderIndex].classList.add('controller-active');
 			}, 100);
 			setTimeout(()=>{
-				$sliderItem[index].classList.add('slider-active');
-				$sliderItem[index].classList.remove('slider-item-prev', 'slider-item-right');
-				$sliderItem[countSliderNow].classList.remove('slider-active', 'slider-item-right', 'slider-marker');
-				countSliderNow = index;
+				$sliderItem[SliderIndex].classList.add('slider-active');
+				$sliderItem[SliderIndex].classList.remove('slider-item-prev', 'slider-item-right');
+				$sliderItem[SliderNow].classList.remove('slider-active', 'slider-item-right', 'slider-marker');
+				SliderNow = SliderIndex;
 				clearInterval(sliderAutoPlay);
 				sliderAutoPlay = setInterval(showNextSlider, 5000);
 			}, 700);
